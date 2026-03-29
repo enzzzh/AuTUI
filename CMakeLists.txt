@@ -1,10 +1,17 @@
 cmake_minimum_required(VERSION 3.14)
 project(AuTUI VERSION 1.0.0 LANGUAGES CXX)
 
+# Optimization: Disable unnecessary components of FTXUI
+set(FTXUI_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(FTXUI_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(FTXUI_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+
+# Optimization: Fully disconnect FetchContent since we manually cloned
+set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
+
 include(FetchContent)
 FetchContent_Declare(ftxui
-    GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
-    GIT_TAG v6.1.9 
+    SOURCE_DIR /home/enzo/Documents/Code/AuTUI/build/_deps/ftxui-src
 )
 FetchContent_MakeAvailable(ftxui)
 
@@ -15,4 +22,3 @@ target_link_libraries(autui PRIVATE
     ftxui::dom
     ftxui::screen
 )
-

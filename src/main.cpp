@@ -1,17 +1,18 @@
 // Copyright 2020 Arthur Sonzogni. All rights reserved.
 // Use of this source code is governed by the MIT license that can be found in
 // the LICENSE file.
-#include <iostream> // for basic_ostream::operator<<, operator<<, endl, basic_ostream, basic_ostream<>::__ostream_type, cout, ostream
-#include <memory>   // for shared_ptr, __shared_ptr_access
-#include <string>   // for to_string, allocator
-// #include "ftxui/component/app.hpp"             // for App
-#include "ftxui/component/captured_mouse.hpp" // for ftxui
+#include "ftxui/component/screen_interactive.hpp"
+#include <ftxui/component/component.hpp>
+#include <iostream> // for basic_ostream::operator<<, operator<<, endl, basic_ostream, basic_ostream<>::__ostream_type, std::cout, ostream
+#include <ostream>
+#include <string> // for to_string, allocator
+// #include "ftxui/component/app.hpp"
 #include "ftxui/component/component.hpp" // for MenuEntryAnimated, Renderer, Vertical
 #include "ftxui/component/component_base.hpp"    // for ComponentBase
 #include "ftxui/component/component_options.hpp" // for MenuEntryAnimated
+#include "ftxui/component/event.hpp"
 #include "ftxui/dom/elements.hpp" // for operator|, separator, Element, Decorator, color, text, hbox, size, bold, frame, inverted, vbox, HEIGHT, LESS_THAN, border
 #include "ftxui/screen/color.hpp" // for Color, Color::Blue, Color::Cyan, Color::Green, Color::Red, Color::Yellow
-
 using namespace ftxui;
 
 // Define a special style for some menu entry.
@@ -27,9 +28,9 @@ MenuEntryOption Colored(ftxui::Color c) {
 }
 
 int main() {
-  auto screen = ftxui::Screen::Create(ftxui::Dimension::Full(),   // width
-                                      ftxui::Dimension::Fixed(10) // height
-  );
+  // auto screen =
+  // ftxui::Screen::Create(ftxui::Dimension::Full(),ftxui::Dimension::Fixed(10));
+  auto screen = ScreenInteractive::TerminalOutput();
   int selected = 0;
   auto menu = Container::Vertical(
       {
@@ -51,7 +52,35 @@ int main() {
            border | bgcolor(Color::Black);
   });
 
-  screen.Loop(renderer);
+  // screen.Loop(renderer);
 
-  std::cout << "Selected element = " << selected << std::endl;
+  // This is the only thing I need for debugging
+  // std::cout << "Selected element = " << selected << std::endl;
+
+  auto component = CatchEvent(renderer, [&](Event event) {
+    if (event == Event::Return) {
+      screen.ExitLoopClosure();
+      return true;
+    }
+    return false;
+  });
+  screen.Loop(component);
+  switch (selected) {
+  case 1:
+    std::cout << "You chose option 1." << std::endl;
+    break;
+  case 2:
+    std::cout << "You chose option 2." << std::endl;
+    break;
+  case 3:
+    std::cout << "You chose option 3." << std::endl;
+    break;
+  case 4:
+    std::cout << "You chose option 4" << std::endl;
+  case 5:
+    return 0;
+    // default:
+    //  std::cout << "Invalid choice." << std::endl;
+    //  break;
+  }
 }
