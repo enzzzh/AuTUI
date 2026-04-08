@@ -6,19 +6,19 @@ set(FTXUI_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(FTXUI_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(FTXUI_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 
-# Optimization: Fully disconnect FetchContent since we manually cloned
-set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
-
 include(FetchContent)
 FetchContent_Declare(ftxui
-    SOURCE_DIR /home/enzo/Documents/Code/AuTUI/build/_deps/ftxui-src
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI
+  GIT_TAG v5.0.0
+  GIT_SHALLOW TRUE
+  FETCHCONTENT_QUIET OFF
 )
 FetchContent_MakeAvailable(ftxui)
 
 add_executable(autui src/main.cpp)
 
 target_link_libraries(autui PRIVATE
-    ftxui::component
-    ftxui::dom
-    ftxui::screen
+  ftxui::screen
+  ftxui::dom
+  ftxui::component
 )
